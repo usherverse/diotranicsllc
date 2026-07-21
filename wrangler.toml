@@ -1,0 +1,7 @@
+name = "diotranics"
+pages_build_output_dir = "dist"
+compatibility_date = "2024-04-03"
+
+[vars]
+VITE_SUPABASE_URL = "https://wkqnqfisskbdvnkmdsiz.supabase.co"
+VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndrcW5xZmlzc2tiZHZua21kc2l6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4Nzk2MDcsImV4cCI6MjA5MDQ1NTYwN30.qf0mC4l_kZVMG7jpkERH21Yb1KMl7xO9B-OWamPeKvA"

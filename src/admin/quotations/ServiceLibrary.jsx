@@ -69,7 +69,7 @@ const ServiceLibrary = () => {
   return (
     <div className="admin-card">
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+      <div className="qc-flex-wrap" style={{ marginBottom: '1.25rem', alignItems: 'center' }}>
         <h2 style={{ fontSize: '1.25rem', color: 'white' }}>
           Service Library <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}>({filtered.length})</span>
         </h2>
@@ -108,7 +108,7 @@ const ServiceLibrary = () => {
       {isAdding && (
         <form onSubmit={handleSubmit} style={{ marginBottom: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <h3 style={{ color: 'var(--primary)', fontSize: '0.9rem', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>New Service</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="qc-grid-form">
             <div className="admin-input-group"><label className="admin-label">Service Name</label><input type="text" className="admin-input" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} /></div>
             <div className="admin-input-group">
               <label className="admin-label">Category</label>
@@ -117,7 +117,7 @@ const ServiceLibrary = () => {
               </select>
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="qc-grid-form">
             <div className="admin-input-group"><label className="admin-label">Default Price (KES)</label><input type="number" className="admin-input" value={formData.default_price} onChange={e => setFormData({ ...formData, default_price: e.target.value })} /></div>
             <div className="admin-input-group"><label className="admin-label">Unit</label><input type="text" className="admin-input" value={formData.default_unit} onChange={e => setFormData({ ...formData, default_unit: e.target.value })} /></div>
           </div>
@@ -127,7 +127,7 @@ const ServiceLibrary = () => {
 
       {loading ? <div className="spinner"></div> : (
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.85rem' }}>
+          <table className="qc-table">
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', textAlign: 'left', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>
                 <th style={{ padding: '0.75rem 1rem' }}>Service Name</th>
@@ -145,13 +145,13 @@ const ServiceLibrary = () => {
                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <td style={{ padding: '0.75rem 1rem' }}>
+                    <td data-label="Service Name" style={{ padding: '0.75rem 1rem' }}>
                       {isEditing
                         ? <input style={inputStyle} value={editData.name} onChange={e => setEditData({ ...editData, name: e.target.value })} />
                         : <span style={{ fontWeight: 600 }}>{s.name}</span>
                       }
                     </td>
-                    <td style={{ padding: '0.75rem 1rem' }}>
+                    <td data-label="Category" style={{ padding: '0.75rem 1rem' }}>
                       {isEditing
                         ? <select style={inputStyle} value={editData.category} onChange={e => setEditData({ ...editData, category: e.target.value })}>
                             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -159,19 +159,19 @@ const ServiceLibrary = () => {
                         : <span style={{ color: 'var(--primary)' }}>{s.category}</span>
                       }
                     </td>
-                    <td style={{ padding: '0.75rem 1rem' }}>
+                    <td data-label="Unit" style={{ padding: '0.75rem 1rem' }}>
                       {isEditing
                         ? <input style={inputStyle} value={editData.default_unit} onChange={e => setEditData({ ...editData, default_unit: e.target.value })} />
                         : s.default_unit
                       }
                     </td>
-                    <td style={{ padding: '0.75rem 1rem', textAlign: 'right', fontWeight: 600 }}>
+                    <td data-label="Default Price" style={{ padding: '0.75rem 1rem', textAlign: 'right', fontWeight: 600 }}>
                       {isEditing
                         ? <input type="number" style={{ ...inputStyle, textAlign: 'right' }} value={editData.default_price} onChange={e => setEditData({ ...editData, default_price: e.target.value })} />
                         : `KES ${Number(s.default_price).toLocaleString()}`
                       }
                     </td>
-                    <td style={{ padding: '0.75rem 1rem', textAlign: 'right' }}>
+                    <td data-label="Actions" style={{ padding: '0.75rem 1rem', textAlign: 'right' }}>
                       {isEditing ? (
                         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                           <button onClick={() => handleEditSave(s.id)} className="btn btn-skew" style={{ background: 'rgba(52,211,153,0.15)', color: '#34d399', border: '1px solid rgba(52,211,153,0.3)', padding: '0.3rem 0.75rem', fontSize: '0.7rem' }}><span>Save</span></button>

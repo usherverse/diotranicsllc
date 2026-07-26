@@ -477,7 +477,7 @@ const CreateQuotation = ({ clients, onSaved, editingQuotation = null, onRefreshC
       <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       {/* Top Details Card */}
       <div className="admin-card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <div className="qc-flex-wrap" style={{ marginBottom: '1.5rem', alignItems: 'center' }}>
           <h2 style={{ fontSize: '1.25rem', color: 'white', margin: 0 }}>Quotation Details</h2>
           {templates.length > 0 && !editingQuotation && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -575,7 +575,7 @@ const CreateQuotation = ({ clients, onSaved, editingQuotation = null, onRefreshC
 
       {/* Sections & Items Builder */}
       <div className="admin-card" style={{ padding: 0, overflow: 'hidden' }}>
-        <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="qc-flex-wrap" style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', alignItems: 'center' }}>
           <h2 style={{ fontSize: '1.25rem', color: 'white', margin: 0 }}>Service Builder</h2>
           <button type="button" onClick={addSection} className="btn btn-skew" style={{ background: 'rgba(255,255,255,0.1)', padding: '0.5rem 1rem', fontSize: '0.75rem' }}>
             <span>+ Add Section</span>

@@ -118,7 +118,7 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onRefreshRe
         </div>
 
         {/* Master Info Card */}
-        <div className="admin-card" style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className="admin-card qc-flex-wrap">
           <div>
             <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>Quotation Details</div>
             <h1 style={{ fontSize: '2rem', color: 'var(--primary)', margin: '0 0 0.5rem 0', fontFamily: 'Rajdhani', lineHeight: 1 }}>{quotation.quotation_number}</h1>
@@ -146,7 +146,7 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onRefreshRe
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
+        <div className="qc-grid-layout">
           {/* Main Content: Services */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div className="admin-card">
@@ -157,7 +157,7 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onRefreshRe
                   <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--primary)', marginBottom: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
                     {idx+1}.0 {sec.title}
                   </div>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+                  <table className="qc-table">
                     <thead>
                       <tr style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'left', textTransform: 'uppercase' }}>
                         <th style={{ padding: '0.5rem 0' }}>Description</th>
@@ -168,11 +168,15 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onRefreshRe
                     </thead>
                     <tbody>
                       {sec.items && sec.items.map(item => (
-                        <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                          <td style={{ padding: '0.75rem 0', color: 'white' }}>{item.description}</td>
-                          <td style={{ padding: '0.75rem 0', color: 'rgba(255,255,255,0.7)', textAlign: 'center' }}>{item.quantity} {item.unit}</td>
-                          <td style={{ padding: '0.75rem 0', color: 'rgba(255,255,255,0.7)', textAlign: 'right' }}>{formatCurrency(item.unit_price, quotation.currency)}</td>
-                          <td style={{ padding: '0.75rem 0', color: 'white', fontWeight: 600, textAlign: 'right' }}>{formatCurrency(item.total, quotation.currency)}</td>
+                        <tr key={item.id}>
+                          <td data-label="Description" style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ fontWeight: 600 }}>{item.description}</div>
+                          </td>
+                          <td data-label="Qty" style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{item.quantity} {item.unit}</td>
+                          <td data-label="Unit Price" style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{formatCurrency(item.unit_price, quotation.currency)}</td>
+                          <td data-label="Total" style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', textAlign: 'right', fontWeight: 600 }}>
+                            {formatCurrency(item.total, quotation.currency)}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

@@ -40,7 +40,7 @@ const ClientManager = () => {
 
   return (
     <div className="admin-card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div className="qc-flex-wrap" style={{ marginBottom: '1.5rem', alignItems: 'center' }}>
         <h2 style={{ fontSize: '1.25rem', color: 'white' }}>Client Database</h2>
         <button className="btn btn-primary btn-skew" onClick={() => { setIsAdding(true); setEditingClient(null); setFormData({ client_name: '', company: '', email: '', phone: '', address: '', notes: '' }) }}>
           <span>+ New Client</span>
@@ -55,7 +55,7 @@ const ClientManager = () => {
           
           {loading ? <div className="spinner"></div> : (
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.85rem' }}>
+              <table className="qc-table">
                 <thead>
                   <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', textAlign: 'left', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     <th style={{ padding: '1rem' }}>Name</th>
@@ -67,13 +67,13 @@ const ClientManager = () => {
                 <tbody>
                   {filteredClients.map(client => (
                     <tr key={client.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <td style={{ padding: '1rem' }}>{client.client_name}</td>
-                      <td style={{ padding: '1rem' }}>{client.company || '-'}</td>
-                      <td style={{ padding: '1rem' }}>
+                      <td data-label="Name" style={{ padding: '1rem' }}>{client.client_name}</td>
+                      <td data-label="Company" style={{ padding: '1rem' }}>{client.company || '-'}</td>
+                      <td data-label="Contact" style={{ padding: '1rem' }}>
                         <div>{client.email}</div>
                         <div style={{ opacity: 0.6 }}>{client.phone}</div>
                       </td>
-                      <td style={{ padding: '1rem', textAlign: 'right' }}>
+                      <td data-label="Actions" style={{ padding: '1rem', textAlign: 'right' }}>
                         <button onClick={() => openEdit(client)} className="btn btn-skew" style={{ background: 'rgba(255,255,255,0.1)', padding: '0.4rem 0.8rem', fontSize: '0.7rem' }}><span>Edit</span></button>
                       </td>
                     </tr>
@@ -90,11 +90,11 @@ const ClientManager = () => {
         </>
       ) : (
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="qc-grid-form">
             <div className="admin-input-group"><label className="admin-label">Full Name</label><input type="text" className="admin-input" required value={formData.client_name} onChange={e => setFormData({...formData, client_name: e.target.value})} /></div>
             <div className="admin-input-group"><label className="admin-label">Company (Optional)</label><input type="text" className="admin-input" value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} /></div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="qc-grid-form">
             <div className="admin-input-group"><label className="admin-label">Email</label><input type="email" className="admin-input" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} /></div>
             <div className="admin-input-group"><label className="admin-label">Phone</label><input type="text" className="admin-input" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} /></div>
           </div>

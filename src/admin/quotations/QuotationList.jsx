@@ -83,11 +83,11 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate }) =>
   return (
     <div className="admin-card">
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h2 style={{ fontSize: '1.25rem', color: 'white' }}>
           Quotations <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}>({filtered.length})</span>
         </h2>
-        <div className="admin-input-group" style={{ width: '260px', margin: 0 }}>
+        <div className="admin-input-group" style={{ width: '100%', maxWidth: '260px', margin: 0 }}>
           <input
             type="text"
             className="admin-input"
@@ -122,16 +122,16 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate }) =>
           <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.85rem' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', textAlign: 'left', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                <th style={{ padding: '1rem' }}>Quote #</th>
-                <th style={{ padding: '1rem' }}>Client &amp; Project</th>
-                <th style={{ padding: '1rem', cursor: 'pointer' }} onClick={() => toggleSort('date')}>
+                <th style={{ padding: '0.75rem 0.5rem' }}>Quote #</th>
+                <th style={{ padding: '0.75rem 0.5rem' }}>Client &amp; Project</th>
+                <th style={{ padding: '0.75rem 0.5rem', cursor: 'pointer' }} onClick={() => toggleSort('date')}>
                   Date {sortField === 'date' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
                 </th>
-                <th style={{ padding: '1rem' }}>Status</th>
-                <th style={{ padding: '1rem', textAlign: 'right', cursor: 'pointer' }} onClick={() => toggleSort('amount')}>
+                <th style={{ padding: '0.75rem 0.5rem' }}>Status</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'right', cursor: 'pointer' }} onClick={() => toggleSort('amount')}>
                   Amount {sortField === 'amount' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
                 </th>
-                <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
+                <th style={{ padding: '0.75rem 0.5rem', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -145,13 +145,13 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate }) =>
                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--primary)' }}>{q.quotation_number}</td>
-                    <td style={{ padding: '1rem' }}>
+                    <td style={{ padding: '0.75rem 0.5rem', fontWeight: 600, color: 'var(--primary)' }}>{q.quotation_number}</td>
+                    <td style={{ padding: '0.75rem 0.5rem' }}>
                       <div style={{ fontWeight: 600 }}>{q.client ? q.client.client_name : '-'}</div>
                       <div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{q.project_name || '-'}</div>
                     </td>
-                    <td style={{ padding: '1rem' }}>{new Date(q.issue_date).toLocaleDateString()}</td>
-                    <td style={{ padding: '1rem' }}>
+                    <td style={{ padding: '0.75rem 0.5rem' }}>{new Date(q.issue_date).toLocaleDateString()}</td>
+                    <td style={{ padding: '0.75rem 0.5rem' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                         <span style={{
                           background: statusTheme.bg, color: statusTheme.text, border: `1px solid ${statusTheme.border}`,
@@ -167,10 +167,10 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate }) =>
                         )}
                       </div>
                     </td>
-                    <td style={{ padding: '1rem', textAlign: 'right', fontWeight: 600 }}>
+                    <td style={{ padding: '0.75rem 0.5rem', textAlign: 'right', fontWeight: 600 }}>
                       {formatCurrency(q.grand_total, q.currency)}
                     </td>
-                    <td style={{ padding: '1rem', textAlign: 'right' }}>
+                    <td style={{ padding: '0.75rem 0.5rem', textAlign: 'right' }}>
                       <button
                         onClick={() => onViewQuotation(q.id)}
                         className="btn btn-skew"

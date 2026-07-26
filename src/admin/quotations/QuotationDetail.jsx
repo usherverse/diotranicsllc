@@ -3,11 +3,18 @@ import { getStatusColor, formatCurrency } from './quotationUtils'
 import { supabase } from '../../config/supabaseClient'
 import PDFTemplate from './PDFTemplate'
 
-const QuotationDetail = ({ quotationId, onBack, onEdit, onRefreshRequired }) => {
+const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onRefreshRequired }) => {
   const [quotation, setQuotation] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showPDF, setShowPDF] = useState(false)
   const [updating, setUpdating] = useState(false)
+  const [duplicating, setDuplicating] = useState(false)
+
+  const handleDuplicate = async () => {
+    setDuplicating(true)
+    await onDuplicate(quotationId)
+    setDuplicating(false)
+  }
 
   const fetchDetail = async () => {
     setLoading(true)
@@ -88,6 +95,25 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onRefreshRequired }) => 
             <button onClick={() => onEdit(quotation)} className="btn btn-skew" style={{ background: 'rgba(255,255,255,0.1)', fontSize: '0.75rem', padding: '0.5rem 1rem' }}>
               <span>Edit Quotation</span>
             </button>
+            <button
+              onClick={handleDuplicate}
+              disabled={duplicating}
+              className="btn btn-skew"
+              title="Clone this quotation as a new draft"
+              style={{ background: 'rgba(0,229,255,0.08)', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.2)', fontSize: '0.75rem', padding: '0.5rem 1rem' }}
+            >
+              <span>{duplicating ? 'Cloning…' : '⧉ Clone'}</span>
+            </button>
+            {quotation.client?.email && (
+              <a
+                href={`mailto:${quotation.client.email}?subject=Quotation ${encodeURIComponent(quotation.quotation_number)} – ${encodeURIComponent(quotation.project_name || 'Project')}&body=${encodeURIComponent(`Dear ${quotation.client.client_name || 'Client'},\n\nPlease find attached our quotation ${quotation.quotation_number} for ${quotation.project_name || 'the above project'}.\n\nKindly review and revert with your feedback.\n\nWarm regards,\nDiotranics Enterprises Ltd`)}`}
+                className="btn btn-skew"
+                style={{ background: 'rgba(52,211,153,0.1)', color: '#34d399', border: '1px solid rgba(52,211,153,0.25)', fontSize: '0.75rem', padding: '0.5rem 1rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
+                title={`Send to ${quotation.client.email}`}
+              >
+                <span>✉ Email Client</span>
+              </a>
+            )}
           </div>
         </div>
 

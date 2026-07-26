@@ -154,6 +154,20 @@ ul {
   transform: skewX(-10deg) translateX(0.5rem);
 }
 
+/* Disable skew on small mobile screens to prevent overflow */
+@media (max-width: 480px) {
+  .btn-skew {
+    transform: none;
+    border-left: 4px solid var(--secondary);
+  }
+  .btn-skew span {
+    transform: none;
+  }
+  .btn-skew:hover {
+    transform: translateX(0.25rem);
+  }
+}
+
 .btn-lg {
   padding: 1rem 2rem;
   font-size: 1rem;
@@ -191,6 +205,7 @@ ul {
   z-index: 50;
   background-color: rgba(17, 19, 23, 0.9);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -356,9 +371,16 @@ ul {
 .hero {
   position: relative;
   height: 70vh;
-  min-height: 500px;
+  min-height: 400px;
   overflow: hidden;
   background-color: black;
+}
+
+@media (max-width: 480px) {
+  .hero {
+    height: 85vh;
+    min-height: 360px;
+  }
 }
 
 .hero-overlay {
@@ -502,6 +524,13 @@ ul {
   background-color: rgba(37, 99, 235, 0.05);
   transform: skewX(-12deg);
   pointer-events: none;
+}
+
+/* Hide on mobile to prevent horizontal overflow */
+@media (max-width: 767px) {
+  .services-bg-decor {
+    display: none;
+  }
 }
 
 .section-header {
@@ -803,7 +832,7 @@ ul {
 
 .map-border-1 {
   position: absolute;
-  inset: -16px;
+  inset: -8px;
   border: 2px solid rgba(250, 204, 21, 0.2);
   border-radius: var(--radius);
   transform: rotate(3deg);
@@ -812,11 +841,19 @@ ul {
 
 .map-border-2 {
   position: absolute;
-  inset: -16px;
+  inset: -8px;
   border: 2px solid rgba(37, 99, 235, 0.2);
   border-radius: var(--radius);
   transform: rotate(-3deg);
   z-index: 0;
+}
+
+/* On mobile, hide decorative borders to avoid overflow */
+@media (max-width: 767px) {
+  .map-border-1,
+  .map-border-2 {
+    display: none;
+  }
 }
 
 .map-container {
@@ -1853,8 +1890,12 @@ input, textarea, select {
   /* Start: tiny, centred, invisible */
   top: 50%;
   left: 50%;
-  width: min(640px, 92vw);
+  /* Fallback for browsers that don't support min() */
+  width: 92vw;
+  max-width: 640px;
   max-height: 85vh;
+  /* Try modern min() if supported */
+  width: min(640px, 92vw);
   overflow-y: auto;
   overflow-x: hidden;
   transform: translate(-50%, -50%) scale(0.35);
@@ -1862,7 +1903,7 @@ input, textarea, select {
   pointer-events: none;
   border-radius: 16px;
   /* Glassmorphism base */
-  background: rgba(17, 22, 34, 0.72);
+  background: rgba(17, 22, 34, 0.92);
   border: 1px solid rgba(255,255,255,0.10);
   box-shadow:
     0 0 0 1px rgba(255,255,255,0.06) inset,
@@ -1877,6 +1918,24 @@ input, textarea, select {
   /* Scrollbar styling */
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+/* On very small screens, pin the panel to bottom sheet style */
+@media (max-width: 480px) {
+  .tile-panel {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 20px 20px 0 0;
+    transform: translateY(100%) scale(1);
+  }
+  .tile-panel.open {
+    transform: translateY(0) scale(1);
+  }
 }
 .tile-panel::-webkit-scrollbar { width: 4px; }
 .tile-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }

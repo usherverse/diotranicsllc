@@ -52,7 +52,7 @@ const Hero = () => {
         >
           {slides.map((slide, index) => (
             <div key={index} className="carousel-slide">
-              <img src={slide.img} alt={slide.title} loading="lazy" />
+              <img src={slide.img} alt={slide.title} loading={index === 0 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'} />
               <div className="slide-content container">
                 <span className="slide-badge">{slide.badge}</span>
                 <h1>{slide.title}</h1>

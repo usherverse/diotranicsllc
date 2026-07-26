@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { supabase } from '../../config/supabaseClient'
+import { generateQuotationNumber } from './quotationUtils'
 import { useQuotations } from './useQuotations'
 import { useClients } from './useClients'
 import QDashboard from './QDashboard'
@@ -26,6 +28,76 @@ const QuotationCenter = ({ session }) => {
   const handleEdit = (q) => {
     setEditingQuotation(q)
     setActiveView('create')
+  }
+
+  const handleDuplicate = async (quotationId) => {
+    try {
+      // Fetch full quotation with sections & items
+      const { data: original, error } = await supabase
+        .from('quotations')
+        .select('*, sections:quotation_sections(*, items:quotation_items(*))')
+        .eq('id', quotationId)
+        .single()
+      if (error) throw error
+
+      // Generate new number
+      const { data: settings } = await supabase.from('company_settings').select('quotation_prefix').single()
+      const prefix = settings?.quotation_prefix || 'DIO-QT'
+      const { count } = await supabase.from('quotations').select('*', { count: 'exact', head: true })
+      const newNumber = generateQuotationNumber(prefix, count || 0)
+
+      // Insert cloned master (strip id, quotation_number, timestamps)
+      const { id, quotation_number, created_at, updated_at, issue_date, sections, client, activity, ...rest } = original
+      const { data: newQ, error: insertErr } = await supabase
+        .from('quotations')
+        .insert([{ ...rest, quotation_number: newNumber, status: 'draft', updated_at: new Date().toISOString() }])
+        .select()
+        .single()
+      if (insertErr) throw insertErr
+
+      // Clone sections & items
+      if (sections && sections.length > 0) {
+        for (let sIdx = 0; sIdx < sections.length; sIdx++) {
+          const sec = sections[sIdx]
+          const { data: newSec, error: secErr } = await supabase
+            .from('quotation_sections')
+            .insert([{ quotation_id: newQ.id, title: sec.title, order_index: sec.order_index }])
+            .select()
+            .single()
+          if (secErr) throw secErr
+
+          if (sec.items && sec.items.length > 0) {
+            const itemsToInsert = sec.items.map(it => ({
+              section_id: newSec.id,
+              quotation_id: newQ.id,
+              description: it.description,
+              unit: it.unit,
+              quantity: it.quantity,
+              unit_price: it.unit_price,
+              discount_type: it.discount_type,
+              discount_value: it.discount_value,
+              tax_rate: it.tax_rate,
+              total: it.total,
+              order_index: it.order_index
+            }))
+            await supabase.from('quotation_items').insert(itemsToInsert)
+          }
+        }
+      }
+
+      // Log activity
+      await supabase.from('quotation_activity').insert([{
+        quotation_id: newQ.id,
+        action: 'Duplicated',
+        description: `Duplicated from ${quotation_number}`
+      }])
+
+      refreshQuotations()
+      setSelectedQuotationId(newQ.id)
+      setActiveView('detail')
+    } catch (err) {
+      alert('Error duplicating: ' + err.message)
+    }
   }
 
   // When switching views, refresh clients so the dropdown is always current
@@ -70,8 +142,8 @@ const QuotationCenter = ({ session }) => {
       {/* Main Content Area */}
       <div style={{ flex: 1, minWidth: 0 }}>
         {activeView === 'dashboard' && <QDashboard quotations={quotations} clients={clients} />}
-        {activeView === 'list' && <QuotationList quotations={quotations} loading={qLoading} onViewQuotation={(id) => { setSelectedQuotationId(id); setActiveView('detail') }} />}
-        {activeView === 'create' && <CreateQuotation clients={clients} onSaved={handleSaved} editingQuotation={editingQuotation} />}
+        {activeView === 'list' && <QuotationList quotations={quotations} loading={qLoading} onViewQuotation={(id) => { setSelectedQuotationId(id); setActiveView('detail') }} onDuplicate={handleDuplicate} />}
+        {activeView === 'create' && <CreateQuotation clients={clients} onSaved={handleSaved} editingQuotation={editingQuotation} onRefreshClients={refreshClients} />}
         {activeView === 'clients' && <ClientManager />}
         {activeView === 'services' && <ServiceLibrary />}
         {activeView === 'settings' && <QSettings />}
@@ -81,6 +153,7 @@ const QuotationCenter = ({ session }) => {
             quotationId={selectedQuotationId} 
             onBack={() => setActiveView('list')} 
             onEdit={handleEdit}
+            onDuplicate={handleDuplicate}
             onRefreshRequired={refreshQuotations}
           />
         )}

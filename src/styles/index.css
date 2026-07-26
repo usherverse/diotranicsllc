@@ -1,2 +1,24 @@
-/* This file is purposefully left mostly empty to avoid overriding the original styles.css */
-/* Minimal resets if needed, but styles.css should handle everything */
+/* Critical mobile fixes — supplements styles.css */
+
+/* Prevent horizontal scroll caused by skewed/overflowing elements */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* iOS Safari 100vh bug fix — use -webkit-fill-available for full-height layouts */
+html {
+  height: -webkit-fill-available;
+}
+
+/* Tailwind's min-h-screen equivalent (not used since no Tailwind is installed) */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Ensure app wrapper fills the screen */
+.app-wrapper {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}

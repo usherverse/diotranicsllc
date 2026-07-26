@@ -28,6 +28,7 @@ export const getStatusColor = (status) => {
   }
 }
 
+// Returns the net total of the line item (quantity * price - discount), exclusive of tax.
 export const calculateLineItemTotal = (item) => {
   const subtotal = (item.quantity || 0) * (item.unit_price || 0)
   let discount = 0
@@ -36,15 +37,26 @@ export const calculateLineItemTotal = (item) => {
   } else {
     discount = item.discount_value || 0
   }
-  const afterDiscount = Math.max(0, subtotal - discount)
-  const tax = afterDiscount * ((item.tax_rate || 0) / 100)
-  return afterDiscount + tax
+  return Math.max(0, subtotal - discount)
 }
 
+// Returns the tax amount for the single line item.
+export const calculateLineItemTax = (item) => {
+  const net = calculateLineItemTotal(item)
+  return net * ((item.tax_rate || 0) / 100)
+}
+
+// Calculates the totals for the entire quotation.
+// Subtotal is the sum of net line item totals.
+// Total tax is the sum of line item taxes, scaled down proportionally if a global discount is applied.
 export const calculateQuotationTotals = (items, taxRate = 16, globalDiscountType = 'percentage', globalDiscountValue = 0, shipping = 0, labour = 0, transport = 0, otherCharges = 0) => {
   let subtotal = 0
+  let rawTaxAmount = 0
+
   items.forEach(item => {
-    subtotal += calculateLineItemTotal(item)
+    const net = calculateLineItemTotal(item)
+    subtotal += net
+    rawTaxAmount += net * ((item.tax_rate || 0) / 100)
   })
 
   let discountAmount = 0
@@ -55,8 +67,11 @@ export const calculateQuotationTotals = (items, taxRate = 16, globalDiscountType
   }
 
   const afterDiscount = Math.max(0, subtotal - discountAmount)
-  const taxAmount = afterDiscount * (taxRate / 100)
   
+  // Proportional tax adjustment for global discount
+  const discountRatio = subtotal > 0 ? afterDiscount / subtotal : 0
+  const taxAmount = rawTaxAmount * discountRatio
+
   const grandTotal = afterDiscount + taxAmount + Number(shipping) + Number(labour) + Number(transport) + Number(otherCharges)
 
   return {

@@ -14,7 +14,7 @@ function AppInner() {
   const isAdmin = location.pathname.startsWith('/admin')
 
   return (
-    <div className="app-wrapper min-h-screen">
+    <div className="app-wrapper">
       <Navbar isAdmin={isAdmin} />
       <main>
         <Routes>

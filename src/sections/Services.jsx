@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 
 const Services = () => {
   const [activeTile, setActiveTile] = useState(null)
-  const [expandedCategory, setExpandedCategory] = useState(null)
+  // Default first category open on mobile so content is visible immediately
+  const [expandedCategory, setExpandedCategory] = useState('borehole')
   
   const categoryLabels = {
     borehole: 'Borehole Services',

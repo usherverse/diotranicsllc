@@ -10,6 +10,7 @@ import QuotationDetail from './QuotationDetail'
 import ClientManager from './ClientManager'
 import ServiceLibrary from './ServiceLibrary'
 import QSettings from './QSettings'
+import '../../styles/admin-qc.css'
 
 const QuotationCenter = ({ session }) => {
   const { quotations, loading: qLoading, refreshQuotations } = useQuotations()
@@ -118,17 +119,16 @@ const QuotationCenter = ({ session }) => {
   ]
 
   return (
-    <div style={{ display: 'flex', gap: '2rem', height: '100%', alignItems: 'flex-start' }}>
+    <div className="qc-layout">
       {/* Secondary Sidebar */}
-      <div className="admin-card no-print" style={{ width: '250px', padding: '1rem', flexShrink: 0, position: 'sticky', top: '100px' }}>
+      <div className="qc-sidebar no-print">
         <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem', paddingLeft: '1rem' }}>Quotation Menu</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+        <div className="qc-sidebar-nav">
           {navItems.map(item => (
             <button
               key={item.id}
               className={`nav-item ${activeView === item.id ? 'active' : ''}`}
               onClick={() => handleNavChange(item.id)}
-              style={{ padding: '0.75rem 1rem', fontSize: '0.75rem' }}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
                 {item.icon}

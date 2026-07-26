@@ -1,0 +1,89 @@
+/* --- Quotation Center Responsive Layout --- */
+.qc-layout {
+  display: flex;
+  gap: 2rem;
+  height: 100%;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .qc-layout {
+    flex-direction: row;
+  }
+}
+
+.qc-sidebar {
+  width: 100%;
+  padding: 1rem;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius);
+}
+
+@media (min-width: 1024px) {
+  .qc-sidebar {
+    width: 250px;
+    position: sticky;
+    top: 100px;
+  }
+}
+
+.qc-sidebar-nav {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  /* hide scrollbar */
+  scrollbar-width: none; 
+}
+.qc-sidebar-nav::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .qc-sidebar-nav {
+    flex-direction: column;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+}
+
+.qc-sidebar-nav .nav-item {
+  white-space: nowrap;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+}
+
+/* --- Live Total Floating Widget --- */
+.qc-live-total {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
+  background: linear-gradient(135deg, rgba(10,20,40,0.97) 0%, rgba(0,20,50,0.97) 100%);
+  border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  min-width: 220px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,229,255,0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+@media (max-width: 768px) {
+  .qc-live-total {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem; /* Take up most of the width */
+    min-width: 0;
+    padding: 0.75rem 1.25rem;
+  }
+}

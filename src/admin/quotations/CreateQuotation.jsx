@@ -449,17 +449,9 @@ const CreateQuotation = ({ clients, onSaved, editingQuotation = null, onRefreshC
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', paddingBottom: '120px' }}>
       {/* Sticky floating live-total widget */}
-      <div style={{
-        position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 100,
-        background: 'linear-gradient(135deg, rgba(10,20,40,0.97) 0%, rgba(0,20,50,0.97) 100%)',
-        border: '1px solid rgba(0,229,255,0.25)', borderRadius: '16px',
-        padding: '1rem 1.5rem', minWidth: '220px',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,229,255,0.08)',
-        backdropFilter: 'blur(16px)',
-        display: 'flex', flexDirection: 'column', gap: '0.35rem'
-      }}>
+      <div className="qc-live-total">
         <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', marginBottom: '0.25rem' }}>Live Total</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'rgba(255,255,255,0.55)' }}>
           <span>Subtotal</span><span>{formatCurrency(totals.subtotal, formData.currency)}</span>

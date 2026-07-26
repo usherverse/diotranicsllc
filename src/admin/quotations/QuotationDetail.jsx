@@ -3,7 +3,7 @@ import { getStatusColor, formatCurrency } from './quotationUtils'
 import { supabase } from '../../config/supabaseClient'
 import PDFTemplate from './PDFTemplate'
 
-const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onRefreshRequired }) => {
+const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onRefreshRequired, isCloned }) => {
   const [quotation, setQuotation] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showPDF, setShowPDF] = useState(false)
@@ -83,6 +83,44 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onRefreshRe
   return (
     <>
       <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+        {/* Clone Banner */}
+        {isCloned && (
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(0,229,255,0.12) 0%, rgba(0,150,255,0.08) 100%)',
+            border: '1px solid rgba(0,229,255,0.35)',
+            borderRadius: '12px',
+            padding: '1rem 1.25rem',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '1rem',
+            animation: 'fadeIn 0.4s ease'
+          }}>
+            <div style={{
+              width: '36px', height: '36px', borderRadius: '50%',
+              background: 'rgba(0,229,255,0.15)', border: '1px solid rgba(0,229,255,0.4)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '1.1rem', flexShrink: 0
+            }}>⧉</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ color: '#00e5ff', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.25rem' }}>
+                This is a freshly cloned draft
+              </div>
+              <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.82rem', lineHeight: 1.5 }}>
+                A copy of the original quotation has been created with a new number and set to <strong style={{ color: 'white' }}>Draft</strong> status.
+                Review the details, make any changes needed, then update the status to <strong style={{ color: 'white' }}>Sent</strong> or <strong style={{ color: 'white' }}>Pending Approval</strong> when ready.
+              </div>
+            </div>
+            <button
+              onClick={() => onEdit(quotation)}
+              className="btn btn-skew"
+              style={{ background: 'rgba(0,229,255,0.15)', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.3)', fontSize: '0.75rem', padding: '0.5rem 1rem', flexShrink: 0 }}
+            >
+              <span>Edit Now →</span>
+            </button>
+          </div>
+        )}
+
         {/* Header Actions */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <button onClick={onBack} className="btn" style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: 0 }}>

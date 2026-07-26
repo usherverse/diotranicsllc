@@ -3,6 +3,7 @@ import { supabase } from '../../config/supabaseClient'
 import { generateQuotationNumber } from './quotationUtils'
 import { useQuotations } from './useQuotations'
 import { useClients } from './useClients'
+import { useToast } from '../Toast'
 import QDashboard from './QDashboard'
 import QuotationList from './QuotationList'
 import CreateQuotation from './CreateQuotation'
@@ -15,10 +16,12 @@ import '../../styles/admin-qc.css'
 const QuotationCenter = ({ session }) => {
   const { quotations, loading: qLoading, refreshQuotations } = useQuotations()
   const { clients, loading: cLoading, refreshClients } = useClients()
+  const addToast = useToast()
   
   const [activeView, setActiveView] = useState('dashboard') // dashboard | create | list | settings | clients | services | detail
   const [selectedQuotationId, setSelectedQuotationId] = useState(null)
   const [editingQuotation, setEditingQuotation] = useState(null)
+  const [isCloned, setIsCloned] = useState(false)
 
   const handleSaved = () => {
     refreshQuotations()
@@ -94,10 +97,16 @@ const QuotationCenter = ({ session }) => {
       }])
 
       refreshQuotations()
+      setIsCloned(true)
       setSelectedQuotationId(newQ.id)
       setActiveView('detail')
+      addToast(
+        `✔ Quotation cloned! Now viewing new draft ${newQ.quotation_number}`,
+        'success',
+        5000
+      )
     } catch (err) {
-      alert('Error duplicating: ' + err.message)
+      addToast('Error duplicating: ' + err.message, 'error')
     }
   }
 
@@ -107,6 +116,7 @@ const QuotationCenter = ({ session }) => {
     setActiveView(id)
     setEditingQuotation(null)
     setSelectedQuotationId(null)
+    setIsCloned(false)
   }
 
   const navItems = [
@@ -151,10 +161,11 @@ const QuotationCenter = ({ session }) => {
         {activeView === 'detail' && selectedQuotationId && (
           <QuotationDetail 
             quotationId={selectedQuotationId} 
-            onBack={() => setActiveView('list')} 
+            onBack={() => { setActiveView('list'); setIsCloned(false) }} 
             onEdit={handleEdit}
             onDuplicate={handleDuplicate}
             onRefreshRequired={refreshQuotations}
+            isCloned={isCloned}
           />
         )}
       </div>

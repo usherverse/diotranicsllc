@@ -3,6 +3,7 @@ import { supabase } from '../config/supabaseClient'
 import { useNavigate } from 'react-router-dom'
 import '../styles/admin.css'
 import QuotationCenter from './quotations/QuotationCenter'
+import { ToastProvider } from './Toast'
 
 /* ─────────────────────────── helpers ─────────────────────────────── */
 const categoryColors = {
@@ -1100,4 +1101,10 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default function DashboardWithToast(props) {
+  return (
+    <ToastProvider>
+      <Dashboard {...props} />
+    </ToastProvider>
+  )
+}

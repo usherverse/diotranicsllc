@@ -119,7 +119,7 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate }) =>
 
       {loading ? <div className="spinner"></div> : (
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.85rem' }}>
+          <table className="qc-table">
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', textAlign: 'left', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 <th style={{ padding: '0.75rem 0.5rem' }}>Quote #</th>
@@ -145,13 +145,13 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate }) =>
                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <td style={{ padding: '0.75rem 0.5rem', fontWeight: 600, color: 'var(--primary)' }}>{q.quotation_number}</td>
-                    <td style={{ padding: '0.75rem 0.5rem' }}>
+                    <td data-label="Quote #" style={{ padding: '0.75rem 0.5rem', fontWeight: 600, color: 'var(--primary)' }}>{q.quotation_number}</td>
+                    <td data-label="Client & Project" style={{ padding: '0.75rem 0.5rem' }}>
                       <div style={{ fontWeight: 600 }}>{q.client ? q.client.client_name : '-'}</div>
                       <div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{q.project_name || '-'}</div>
                     </td>
-                    <td style={{ padding: '0.75rem 0.5rem' }}>{new Date(q.issue_date).toLocaleDateString()}</td>
-                    <td style={{ padding: '0.75rem 0.5rem' }}>
+                    <td data-label="Date" style={{ padding: '0.75rem 0.5rem' }}>{new Date(q.issue_date).toLocaleDateString()}</td>
+                    <td data-label="Status" style={{ padding: '0.75rem 0.5rem' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                         <span style={{
                           background: statusTheme.bg, color: statusTheme.text, border: `1px solid ${statusTheme.border}`,
@@ -167,10 +167,10 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate }) =>
                         )}
                       </div>
                     </td>
-                    <td style={{ padding: '0.75rem 0.5rem', textAlign: 'right', fontWeight: 600 }}>
+                    <td data-label="Amount" style={{ padding: '0.75rem 0.5rem', textAlign: 'right', fontWeight: 600 }}>
                       {formatCurrency(q.grand_total, q.currency)}
                     </td>
-                    <td style={{ padding: '0.75rem 0.5rem', textAlign: 'right' }}>
+                    <td data-label="Actions" style={{ padding: '0.75rem 0.5rem', textAlign: 'right' }}>
                       <button
                         onClick={() => onViewQuotation(q.id)}
                         className="btn btn-skew"

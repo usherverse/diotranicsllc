@@ -567,9 +567,15 @@
   border: 1px solid rgba(0, 229, 255, 0.2);
   border-radius: 12px;
   box-shadow: 0 10px 40px -10px rgba(0, 150, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  padding: 2rem;
+  padding: 1.25rem;
   position: relative;
   overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .summary-premium-card {
+    padding: 2rem;
+  }
 }
 
 .summary-premium-card::before {

@@ -643,7 +643,7 @@ const CreateQuotation = ({ clients, onSaved, editingQuotation = null, onRefreshC
       </div>
 
       {/* Totals & Notes */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '2rem' }}>
+      <div className="qc-grid-layout">
         <div className="terms-premium-panel">
           <div className="admin-input-group">
             <label className="summary-label">Terms & Conditions</label>

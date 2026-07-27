@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { getStatusColor, formatCurrency } from './quotationUtils'
 import { supabase } from '../../config/supabaseClient'
 import PDFTemplate from './PDFTemplate'
+import ConfirmModal from './ConfirmModal'
 
 const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onDelete, onRefreshRequired, isCloned }) => {
   const [quotation, setQuotation] = useState(null)
@@ -9,6 +10,7 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onDelete, o
   const [showPDF, setShowPDF] = useState(false)
   const [updating, setUpdating] = useState(false)
   const [duplicating, setDuplicating] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
   const handleDuplicate = async () => {
@@ -17,14 +19,13 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onDelete, o
     setDuplicating(false)
   }
 
-  const handleDelete = async () => {
+  const handleConfirmDelete = async () => {
     if (!quotation) return
     const num = quotation.quotation_number || 'this quotation'
-    if (window.confirm(`Are you sure you want to delete quotation ${num}? This action cannot be undone.`)) {
-      setDeleting(true)
-      await onDelete(quotation.id, num)
-      setDeleting(false)
-    }
+    setDeleting(true)
+    await onDelete(quotation.id, num)
+    setDeleting(false)
+    setShowDeleteModal(false)
   }
 
   const fetchDetail = async () => {
@@ -164,13 +165,13 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onDelete, o
               </a>
             )}
             <button
-              onClick={handleDelete}
+              onClick={() => setShowDeleteModal(true)}
               disabled={deleting}
               className="btn btn-skew"
               title="Delete this quotation permanently"
               style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', fontSize: '0.75rem', padding: '0.5rem 1rem' }}
             >
-              <span>{deleting ? 'Deleting…' : '🗑 Delete Quotation'}</span>
+              <span>🗑 Delete Quotation</span>
             </button>
           </div>
         </div>
@@ -290,6 +291,18 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onDelete, o
       </div>
 
       {showPDF && <PDFTemplate quotation={quotation} onClose={() => setShowPDF(false)} />}
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        title="Delete Quotation"
+        message={`Are you sure you want to delete quotation ${quotation?.quotation_number || ''}? This action cannot be undone and will remove all associated line items and activity logs.`}
+        confirmText="Delete Quotation"
+        cancelText="Cancel"
+        variant="danger"
+        loading={deleting}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setShowDeleteModal(false)}
+      />
     </>
   )
 }

@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { getStatusColor, formatCurrency } from './quotationUtils'
+import ConfirmModal from './ConfirmModal'
 
 const STATUS_FILTERS = ['All', 'draft', 'pending approval', 'sent', 'approved', 'rejected']
 const TERMINAL_STATUSES = ['approved', 'accepted', 'rejected', 'cancelled', 'completed']
@@ -20,7 +21,8 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate, onDe
   const [sortField, setSortField] = useState('date') // 'date' | 'amount'
   const [sortDir, setSortDir] = useState('desc')     // 'asc' | 'desc'
   const [duplicatingId, setDuplicatingId] = useState(null)
-  const [deletingId, setDeletingId] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null) // { id, num }
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDuplicate = async (e, id) => {
     e.stopPropagation()
@@ -29,14 +31,17 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate, onDe
     setDuplicatingId(null)
   }
 
-  const handleDelete = async (e, q) => {
+  const promptDelete = (e, q) => {
     e.stopPropagation()
-    const num = q.quotation_number || 'this quotation'
-    if (window.confirm(`Are you sure you want to delete quotation ${num}? This action cannot be undone.`)) {
-      setDeletingId(q.id)
-      await onDelete(q.id, num)
-      setDeletingId(null)
-    }
+    setDeleteTarget({ id: q.id, num: q.quotation_number || 'this quotation' })
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return
+    setIsDeleting(true)
+    await onDelete(deleteTarget.id, deleteTarget.num)
+    setIsDeleting(false)
+    setDeleteTarget(null)
   }
 
   const toggleSort = (field) => {
@@ -199,13 +204,13 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate, onDe
                         <span>{duplicatingId === q.id ? '…' : '⧉ Clone'}</span>
                       </button>
                       <button
-                        onClick={(e) => handleDelete(e, q)}
-                        disabled={deletingId === q.id || duplicatingId === q.id}
+                        onClick={(e) => promptDelete(e, q)}
+                        disabled={isDeleting || duplicatingId === q.id}
                         className="btn btn-skew"
                         title="Delete this quotation"
                         style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', padding: '0.4rem 0.8rem', fontSize: '0.7rem' }}
                       >
-                        <span>{deletingId === q.id ? '…' : '🗑 Delete'}</span>
+                        <span>🗑 Delete</span>
                       </button>
                     </td>
                   </tr>
@@ -222,6 +227,19 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate, onDe
           </table>
         </div>
       )}
+
+      {/* App-styled Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Quotation"
+        message={`Are you sure you want to delete quotation ${deleteTarget?.num || ''}? This action cannot be undone and will remove all associated line items and activity logs.`}
+        confirmText="Delete Quotation"
+        cancelText="Cancel"
+        variant="danger"
+        loading={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }

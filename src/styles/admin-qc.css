@@ -33,20 +33,20 @@
 }
 
 .qc-sidebar-nav {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 0.5rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  /* hide scrollbar */
-  scrollbar-width: none; 
 }
-.qc-sidebar-nav::-webkit-scrollbar {
-  display: none;
+
+@media (max-width: 640px) {
+  .qc-sidebar-nav {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 1024px) {
   .qc-sidebar-nav {
+    display: flex;
     flex-direction: column;
     overflow-x: visible;
     padding-bottom: 0;
@@ -54,9 +54,22 @@
 }
 
 .qc-sidebar-nav .nav-item {
-  white-space: nowrap;
-  padding: 0.75rem 1rem;
-  font-size: 0.75rem;
+  width: 100%;
+  white-space: normal;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.72rem;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-sizing: border-box;
+}
+
+.qc-sidebar-nav .nav-item.active {
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  color: var(--primary);
 }
 
 /* --- Live Total Floating Widget --- */

@@ -196,7 +196,7 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate, onDe
                       </button>
                       <button
                         onClick={(e) => handleDuplicate(e, q.id)}
-                        disabled={duplicatingId === q.id || deletingId === q.id}
+                        disabled={duplicatingId === q.id || (isDeleting && deleteTarget?.id === q.id)}
                         className="btn btn-skew"
                         title="Clone this quotation as a new draft"
                         style={{ background: 'rgba(0,229,255,0.08)', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.2)', padding: '0.4rem 0.8rem', fontSize: '0.7rem', marginRight: '0.5rem' }}

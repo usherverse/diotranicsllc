@@ -64,11 +64,34 @@ export function useQuotations() {
     }
   }
 
+  const deleteQuotation = async (id) => {
+    try {
+      // Clean up child tables explicitly in case ON DELETE CASCADE is missing
+      await supabase.from('quotation_signatures').delete().eq('quotation_id', id)
+      await supabase.from('quotation_activity').delete().eq('quotation_id', id)
+      await supabase.from('quotation_items').delete().eq('quotation_id', id)
+      await supabase.from('quotation_sections').delete().eq('quotation_id', id)
+
+      const { error } = await supabase
+        .from('quotations')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+      setQuotations(prev => prev.filter(q => q.id !== id))
+      return true
+    } catch (err) {
+      console.error("Error deleting quotation:", err)
+      throw err
+    }
+  }
+
   return {
     quotations,
     loading,
     error,
     refreshQuotations: fetchQuotations,
-    getQuotationById
+    getQuotationById,
+    deleteQuotation
   }
 }

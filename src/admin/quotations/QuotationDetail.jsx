@@ -3,17 +3,28 @@ import { getStatusColor, formatCurrency } from './quotationUtils'
 import { supabase } from '../../config/supabaseClient'
 import PDFTemplate from './PDFTemplate'
 
-const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onRefreshRequired, isCloned }) => {
+const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onDelete, onRefreshRequired, isCloned }) => {
   const [quotation, setQuotation] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showPDF, setShowPDF] = useState(false)
   const [updating, setUpdating] = useState(false)
   const [duplicating, setDuplicating] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   const handleDuplicate = async () => {
     setDuplicating(true)
     await onDuplicate(quotationId)
     setDuplicating(false)
+  }
+
+  const handleDelete = async () => {
+    if (!quotation) return
+    const num = quotation.quotation_number || 'this quotation'
+    if (window.confirm(`Are you sure you want to delete quotation ${num}? This action cannot be undone.`)) {
+      setDeleting(true)
+      await onDelete(quotation.id, num)
+      setDeleting(false)
+    }
   }
 
   const fetchDetail = async () => {
@@ -152,6 +163,15 @@ const QuotationDetail = ({ quotationId, onBack, onEdit, onDuplicate, onRefreshRe
                 <span>✉ Email Client</span>
               </a>
             )}
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="btn btn-skew"
+              title="Delete this quotation permanently"
+              style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', fontSize: '0.75rem', padding: '0.5rem 1rem' }}
+            >
+              <span>{deleting ? 'Deleting…' : '🗑 Delete Quotation'}</span>
+            </button>
           </div>
         </div>
 

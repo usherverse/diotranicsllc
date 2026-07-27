@@ -14,7 +14,7 @@ import QSettings from './QSettings'
 import '../../styles/admin-qc.css'
 
 const QuotationCenter = ({ session }) => {
-  const { quotations, loading: qLoading, refreshQuotations } = useQuotations()
+  const { quotations, loading: qLoading, refreshQuotations, deleteQuotation } = useQuotations()
   const { clients, loading: cLoading, refreshClients } = useClients()
   const addToast = useToast()
   
@@ -27,6 +27,19 @@ const QuotationCenter = ({ session }) => {
     refreshQuotations()
     setActiveView('list')
     setEditingQuotation(null)
+  }
+
+  const handleDelete = async (id, quotationNumber) => {
+    try {
+      await deleteQuotation(id)
+      addToast(`✔ Quotation ${quotationNumber || ''} deleted successfully`, 'success')
+      if (selectedQuotationId === id) {
+        setSelectedQuotationId(null)
+        setActiveView('list')
+      }
+    } catch (err) {
+      addToast(`Error deleting quotation: ${err.message}`, 'error')
+    }
   }
 
   const handleEdit = (q) => {
@@ -152,7 +165,7 @@ const QuotationCenter = ({ session }) => {
       {/* Main Content Area */}
       <div style={{ flex: 1, minWidth: 0 }}>
         {activeView === 'dashboard' && <QDashboard quotations={quotations} clients={clients} />}
-        {activeView === 'list' && <QuotationList quotations={quotations} loading={qLoading} onViewQuotation={(id) => { setSelectedQuotationId(id); setActiveView('detail') }} onDuplicate={handleDuplicate} />}
+        {activeView === 'list' && <QuotationList quotations={quotations} loading={qLoading} onViewQuotation={(id) => { setSelectedQuotationId(id); setActiveView('detail') }} onDuplicate={handleDuplicate} onDelete={handleDelete} />}
         {activeView === 'create' && <CreateQuotation clients={clients} onSaved={handleSaved} editingQuotation={editingQuotation} onRefreshClients={refreshClients} />}
         {activeView === 'clients' && <ClientManager />}
         {activeView === 'services' && <ServiceLibrary />}
@@ -164,6 +177,7 @@ const QuotationCenter = ({ session }) => {
             onBack={() => { setActiveView('list'); setIsCloned(false) }} 
             onEdit={handleEdit}
             onDuplicate={handleDuplicate}
+            onDelete={handleDelete}
             onRefreshRequired={refreshQuotations}
             isCloned={isCloned}
           />

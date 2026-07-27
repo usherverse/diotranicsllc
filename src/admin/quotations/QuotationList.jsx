@@ -14,18 +14,29 @@ const getExpiryInfo = (q) => {
   return null
 }
 
-const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate }) => {
+const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate, onDelete }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
   const [sortField, setSortField] = useState('date') // 'date' | 'amount'
   const [sortDir, setSortDir] = useState('desc')     // 'asc' | 'desc'
   const [duplicatingId, setDuplicatingId] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
 
   const handleDuplicate = async (e, id) => {
     e.stopPropagation()
     setDuplicatingId(id)
     await onDuplicate(id)
     setDuplicatingId(null)
+  }
+
+  const handleDelete = async (e, q) => {
+    e.stopPropagation()
+    const num = q.quotation_number || 'this quotation'
+    if (window.confirm(`Are you sure you want to delete quotation ${num}? This action cannot be undone.`)) {
+      setDeletingId(q.id)
+      await onDelete(q.id, num)
+      setDeletingId(null)
+    }
   }
 
   const toggleSort = (field) => {
@@ -180,12 +191,21 @@ const QuotationList = ({ quotations, loading, onViewQuotation, onDuplicate }) =>
                       </button>
                       <button
                         onClick={(e) => handleDuplicate(e, q.id)}
-                        disabled={duplicatingId === q.id}
+                        disabled={duplicatingId === q.id || deletingId === q.id}
                         className="btn btn-skew"
                         title="Clone this quotation as a new draft"
-                        style={{ background: 'rgba(0,229,255,0.08)', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.2)', padding: '0.4rem 0.8rem', fontSize: '0.7rem' }}
+                        style={{ background: 'rgba(0,229,255,0.08)', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.2)', padding: '0.4rem 0.8rem', fontSize: '0.7rem', marginRight: '0.5rem' }}
                       >
                         <span>{duplicatingId === q.id ? '…' : '⧉ Clone'}</span>
+                      </button>
+                      <button
+                        onClick={(e) => handleDelete(e, q)}
+                        disabled={deletingId === q.id || duplicatingId === q.id}
+                        className="btn btn-skew"
+                        title="Delete this quotation"
+                        style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)', padding: '0.4rem 0.8rem', fontSize: '0.7rem' }}
+                      >
+                        <span>{deletingId === q.id ? '…' : '🗑 Delete'}</span>
                       </button>
                     </td>
                   </tr>

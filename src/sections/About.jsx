@@ -65,7 +65,7 @@ const About = () => {
                 </svg>
                 Facebook
               </a>
-              <a href="https://tiktok.com/@yourprofile" target="_blank" rel="noreferrer" className="btn btn-dark">TikTok</a>
+              <a href="https://tiktok.com/@diotranics" target="_blank" rel="noreferrer" className="btn btn-dark">TikTok</a>
             </div>
           </div>
           <div className="about-map reveal-on-scroll">
